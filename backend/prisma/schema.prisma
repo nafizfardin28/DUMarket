@@ -1,0 +1,85 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  buyer
+  seller
+}
+
+enum ListingCategory {
+  food
+  books
+  electronics
+  clothing
+  other
+}
+
+enum ListingStatus {
+  active
+  sold
+}
+
+model User {
+  id              Int      @id @default(autoincrement())
+  email           String   @unique
+  password        String
+  fullName        String   @map("full_name")
+  avatar          String?
+  regNo           String   @unique @map("reg_no")
+  role            Role
+  hall            String
+  phone           String
+  isEmailVerified Boolean  @default(false) @map("is_email_verified")
+  emailOtp        String?  @map("email_otp")
+  emailOtpExpiresAt DateTime? @map("email_otp_expires_at")
+  passwordResetOtp String? @map("password_reset_otp")
+  passwordResetOtpExpiresAt DateTime? @map("password_reset_otp_expires_at")
+  isActive        Boolean  @default(true) @map("is_active")
+  lastLogin       DateTime? @map("last_login")
+  dateJoined      DateTime @default(now()) @map("date_joined")
+
+  listings        Listing[]
+  ratingsReceived Rating[]  @relation("SellerRatings")
+  ratingsGiven    Rating[]  @relation("BuyerRatings")
+
+  @@map("users")
+}
+
+model Listing {
+  id          Int             @id @default(autoincrement())
+  title       String
+  description String
+  price       Int
+  category    ListingCategory
+  hall        String
+  images      String[]        @default([])
+  status      ListingStatus   @default(active)
+  sellerId    Int             @map("seller_id")
+  seller      User            @relation(fields: [sellerId], references: [id], onDelete: Cascade)
+  createdAt   DateTime        @default(now()) @map("created_at")
+  updatedAt   DateTime        @updatedAt @map("updated_at")
+
+  @@map("listings")
+}
+
+model Rating {
+  id        Int      @id @default(autoincrement())
+  stars     Int
+  comment   String?
+  sellerId  Int      @map("seller_id")
+  seller    User     @relation("SellerRatings", fields: [sellerId], references: [id], onDelete: Cascade)
+  buyerId   Int      @map("buyer_id")
+  buyer     User     @relation("BuyerRatings", fields: [buyerId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now()) @map("created_at")
+  updatedAt DateTime @updatedAt @map("updated_at")
+
+  // One rating per buyer per seller — rating again just updates it.
+  @@unique([sellerId, buyerId])
+  @@map("ratings")
+}
