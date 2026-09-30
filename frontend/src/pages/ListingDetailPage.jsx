@@ -6,6 +6,21 @@ import SellerRatings from "../components/SellerRatings";
 import { useAuth } from "../context/AuthContext";
 import { deleteListing, getListing, imageUrl, updateListing } from "../api/listings";
 import { categoryLabel } from "../constants/categories";
+import { PhoneIcon, PhotoIcon, TrashIcon } from "../components/icons";
+
+function DetailSkeleton() {
+  return (
+    <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
+      <div className="aspect-square animate-pulse rounded-2xl bg-zinc-100" />
+      <div className="space-y-3">
+        <div className="h-3 w-24 animate-pulse rounded bg-zinc-100" />
+        <div className="h-7 w-2/3 animate-pulse rounded bg-zinc-100" />
+        <div className="h-8 w-28 animate-pulse rounded bg-zinc-100" />
+        <div className="h-20 w-full animate-pulse rounded bg-zinc-100" />
+      </div>
+    </div>
+  );
+}
 
 export default function ListingDetailPage() {
   const { id } = useParams();
@@ -62,7 +77,7 @@ export default function ListingDetailPage() {
   if (loading) {
     return (
       <AppLayout>
-        <p className="text-sm text-stone-500">Loading…</p>
+        <DetailSkeleton />
       </AppLayout>
     );
   }
@@ -70,9 +85,9 @@ export default function ListingDetailPage() {
   if (error || !listing) {
     return (
       <AppLayout>
-        <div className="rounded-xl border border-dashed border-stone-300 bg-white py-16 text-center">
-          <p className="text-sm text-stone-500">{error}</p>
-          <Link to="/listings" className="btn-link mt-3">
+        <div className="rounded-2xl border border-dashed border-zinc-200 bg-white py-20 text-center">
+          <p className="text-sm text-zinc-500">{error}</p>
+          <Link to="/listings" className="btn-link mt-3 justify-center">
             Back to browsing
           </Link>
         </div>
@@ -82,9 +97,9 @@ export default function ListingDetailPage() {
 
   return (
     <AppLayout>
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+      <div className="grid grid-cols-1 gap-10 md:grid-cols-2">
         <div>
-          <div className="aspect-square w-full overflow-hidden rounded-xl border border-stone-200 bg-stone-100">
+          <div className="aspect-square w-full overflow-hidden rounded-2xl border border-zinc-200/70 bg-zinc-100">
             {listing.images.length > 0 ? (
               <img
                 src={imageUrl(listing.images[activeImage])}
@@ -92,7 +107,9 @@ export default function ListingDetailPage() {
                 className="h-full w-full object-cover"
               />
             ) : (
-              <div className="flex h-full w-full items-center justify-center text-5xl text-stone-300">📦</div>
+              <div className="flex h-full w-full items-center justify-center text-zinc-300">
+                <PhotoIcon className="h-12 w-12" />
+              </div>
             )}
           </div>
           {listing.images.length > 1 && (
@@ -101,8 +118,8 @@ export default function ListingDetailPage() {
                 <button
                   key={img}
                   onClick={() => setActiveImage(i)}
-                  className={`h-14 w-14 overflow-hidden rounded-lg border-2 ${
-                    i === activeImage ? "border-brand-500" : "border-transparent"
+                  className={`h-14 w-14 overflow-hidden rounded-xl border-2 transition-colors ${
+                    i === activeImage ? "border-brand-500" : "border-transparent opacity-70 hover:opacity-100"
                   }`}
                 >
                   <img src={imageUrl(img)} alt="" className="h-full w-full object-cover" />
@@ -114,65 +131,64 @@ export default function ListingDetailPage() {
 
         <div>
           <div className="flex items-start justify-between gap-3">
-            <h1 className="text-xl font-bold text-stone-900">{listing.title}</h1>
+            <div>
+              <span className="badge bg-zinc-100 text-zinc-500">{categoryLabel(listing.category)}</span>
+              <h1 className="mt-2 text-2xl font-bold tracking-tight text-zinc-900">{listing.title}</h1>
+            </div>
             {listing.status === "sold" && (
-              <span className="shrink-0 rounded-full bg-stone-200 px-2.5 py-1 text-xs font-bold uppercase text-stone-600">
-                Sold
-              </span>
+              <span className="badge shrink-0 bg-zinc-900 text-white">Sold</span>
             )}
           </div>
-          <p className="mt-1 text-2xl font-bold text-brand-600">৳{listing.price}</p>
+          <p className="mt-2 text-3xl font-bold text-zinc-900">৳{listing.price}</p>
 
-          <dl className="mt-4 space-y-2 text-sm">
-            <div className="flex justify-between border-b border-stone-200 py-2">
-              <dt className="text-stone-500">Category</dt>
-              <dd className="font-medium text-stone-900">{categoryLabel(listing.category)}</dd>
-            </div>
-            <div className="flex justify-between border-b border-stone-200 py-2">
-              <dt className="text-stone-500">Pickup hall</dt>
-              <dd className="font-medium text-stone-900">{listing.hall}</dd>
-            </div>
-          </dl>
+          <div className="mt-4 flex items-center gap-1.5 text-sm text-zinc-500">
+            <span className="font-medium text-zinc-700">Pickup:</span> {listing.hall}
+          </div>
 
-          <p className="mt-4 whitespace-pre-wrap text-sm text-stone-600">{listing.description}</p>
+          <p className="mt-4 whitespace-pre-wrap text-[15px] leading-relaxed text-zinc-600">
+            {listing.description}
+          </p>
 
-          <div className="mt-6 rounded-xl border border-stone-200 bg-white p-4">
-            <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Seller</p>
-            <div className="mt-2 flex items-center gap-3">
-              <div className="h-10 w-10 shrink-0 overflow-hidden rounded-full bg-stone-200">
+          <div className="mt-6 rounded-2xl border border-zinc-200/70 bg-white p-4">
+            <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">Seller</p>
+            <div className="mt-2.5 flex items-center gap-3">
+              <div className="h-11 w-11 shrink-0 overflow-hidden rounded-full bg-zinc-200">
                 {listing.seller?.avatar ? (
                   <img src={imageUrl(listing.seller.avatar)} alt="" className="h-full w-full object-cover" />
                 ) : (
-                  <div className="flex h-full w-full items-center justify-center text-sm font-bold text-stone-500">
+                  <div className="flex h-full w-full items-center justify-center text-sm font-bold text-zinc-500">
                     {listing.seller?.full_name?.[0]?.toUpperCase()}
                   </div>
                 )}
               </div>
               <div>
-                <p className="font-semibold text-stone-900">{listing.seller?.full_name}</p>
-                <p className="text-sm text-stone-500">{listing.seller?.hall}</p>
+                <p className="font-semibold text-zinc-900">{listing.seller?.full_name}</p>
+                <p className="text-sm text-zinc-500">{listing.seller?.hall}</p>
               </div>
             </div>
             {!isOwner && (
               <a
                 href={`tel:${listing.seller?.phone}`}
-                className="btn-primary mt-3 inline-block text-center no-underline"
+                className="btn-primary mt-3.5 flex items-center justify-center gap-2 no-underline"
               >
+                <PhoneIcon className="h-4 w-4" />
                 Call {listing.seller?.phone}
               </a>
             )}
           </div>
 
           {isOwner && (
-            <div className="mt-6 flex gap-2">
+            <div className="mt-4 flex gap-2">
               <button onClick={handleToggleSold} disabled={busy} className="btn-primary flex-1">
                 {listing.status === "sold" ? "Mark as active" : "Mark as sold"}
               </button>
               <button
                 onClick={() => setConfirmingDelete(true)}
                 disabled={busy}
-                className="rounded-lg border border-red-200 px-4 py-2.5 text-sm font-semibold text-red-600 hover:bg-red-50 disabled:opacity-60"
+                className="flex items-center gap-1.5 rounded-xl border border-rose-200 px-4 py-2.5 text-sm font-semibold
+                  text-rose-600 transition-colors hover:bg-rose-50 disabled:opacity-60"
               >
+                <TrashIcon className="h-4 w-4" />
                 Delete
               </button>
             </div>

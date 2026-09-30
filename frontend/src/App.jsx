@@ -1,4 +1,5 @@
 import { Navigate, Route, Routes } from "react-router-dom";
+import LoadingScreen from "./components/LoadingScreen";
 import ProtectedRoute from "./components/ProtectedRoute";
 import SellerRoute from "./components/SellerRoute";
 import { useAuth } from "./context/AuthContext";
@@ -15,7 +16,7 @@ export default function App() {
   const { loading } = useAuth();
 
   if (loading) {
-    return <div className="flex h-screen items-center justify-center text-stone-500">Loading…</div>;
+    return <LoadingScreen />;
   }
 
   return (

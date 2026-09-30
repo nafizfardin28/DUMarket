@@ -4,6 +4,7 @@ import AppLayout from "../components/AppLayout";
 import { createListing } from "../api/listings";
 import { CATEGORIES } from "../constants/categories";
 import { HALLS } from "../constants/halls";
+import { XMarkIcon } from "../components/icons";
 
 const MAX_IMAGES = 4;
 
@@ -77,9 +78,9 @@ export default function CreateListingPage() {
 
   return (
     <AppLayout>
-      <div className="mx-auto max-w-xl rounded-2xl border border-stone-200 bg-white p-6 sm:p-8">
-        <h1 className="text-xl font-bold text-stone-900">List something to sell</h1>
-        <p className="mt-1 text-sm text-stone-500">Buyers on your hall (and others) will see this in Browse.</p>
+      <div className="mx-auto max-w-xl card p-6 sm:p-8">
+        <h1 className="text-xl font-bold text-zinc-900">List something to sell</h1>
+        <p className="mt-1 text-sm text-zinc-500">Buyers on your hall (and others) will see this in Browse.</p>
 
         <form onSubmit={handleSubmit} noValidate className="mt-6 space-y-4">
           <div>
@@ -172,22 +173,22 @@ export default function CreateListingPage() {
 
           <div>
             <label className="field-label" htmlFor="images">
-              Photos <span className="font-normal text-stone-400">(up to {MAX_IMAGES}, optional)</span>
+              Photos <span className="font-normal text-zinc-400">(up to {MAX_IMAGES}, optional)</span>
             </label>
 
             {previews.length > 0 && (
               <div className="mb-3 grid grid-cols-4 gap-2">
                 {previews.map((src, index) => (
-                  <div key={src} className="group relative aspect-square overflow-hidden rounded-lg border border-stone-200">
+                  <div key={src} className="group relative aspect-square overflow-hidden rounded-xl border border-zinc-200/70">
                     <img src={src} alt="" className="h-full w-full object-cover" />
                     <button
                       type="button"
                       onClick={() => removeImage(index)}
                       aria-label="Remove photo"
-                      className="absolute right-1 top-1 flex h-5 w-5 items-center justify-center rounded-full bg-black/60 text-xs
-                        font-bold text-white opacity-0 transition-opacity group-hover:opacity-100"
+                      className="absolute right-1.5 top-1.5 flex h-5 w-5 items-center justify-center rounded-full bg-zinc-950/60
+                        text-white opacity-0 transition-opacity group-hover:opacity-100"
                     >
-                      ✕
+                      <XMarkIcon className="h-3 w-3" />
                     </button>
                   </div>
                 ))}
@@ -204,7 +205,7 @@ export default function CreateListingPage() {
                 className="field-input file:mr-3 file:rounded-md file:border-0 file:bg-brand-50 file:px-3 file:py-1.5 file:text-sm file:font-semibold file:text-brand-600"
               />
             )}
-            <p className="mt-1 text-xs text-stone-500">
+            <p className="mt-1 text-xs text-zinc-500">
               {images.length}/{MAX_IMAGES} photo{images.length === 1 ? "" : "s"} selected. You can add more than
               one at a time, or pick them one by one.
             </p>

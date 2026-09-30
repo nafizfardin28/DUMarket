@@ -4,7 +4,7 @@ import Topbar from "./Topbar";
 
 const COLLAPSE_KEY = "sidebarCollapsed";
 
-export default function AppLayout({ children }) {
+export default function AppLayout({ children, maxWidthClass = "max-w-5xl" }) {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [collapsed, setCollapsed] = useState(() => {
     try {
@@ -23,10 +23,10 @@ export default function AppLayout({ children }) {
   }, [collapsed]);
 
   return (
-    <div className="min-h-screen bg-stone-100 lg:flex">
+    <div className="min-h-screen bg-zinc-50 lg:flex">
       {/* Desktop sidebar */}
       <aside
-        className={`hidden shrink-0 border-r border-stone-200 bg-white transition-[width] duration-200 lg:block ${
+        className={`hidden shrink-0 border-r border-zinc-100 bg-white transition-[width] duration-200 lg:block ${
           collapsed ? "w-20" : "w-64"
         }`}
       >
@@ -51,7 +51,7 @@ export default function AppLayout({ children }) {
           <Topbar onOpenMobileMenu={() => setMobileOpen(true)} />
         </div>
         <main className="flex-1 px-4 py-6 sm:px-6 lg:px-8">
-          <div className="mx-auto max-w-5xl">{children}</div>
+          <div className={`mx-auto ${maxWidthClass}`}>{children}</div>
         </main>
       </div>
     </div>

@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import AppLayout from "../components/AppLayout";
 import ListingCard from "../components/ListingCard";
 import { getMyListings } from "../api/listings";
+import { ArchiveBoxIcon, PlusIcon } from "../components/icons";
 
 export default function MyListingsPage() {
   const [listings, setListings] = useState(null);
@@ -25,18 +26,24 @@ export default function MyListingsPage() {
   return (
     <AppLayout>
       <div className="mb-6 flex items-center justify-between">
-        <h1 className="text-xl font-bold text-stone-900">My listings</h1>
-        <Link to="/listings/new" className="btn-primary !w-auto px-4 py-2">
-          + New listing
+        <div>
+          <h1 className="text-2xl font-bold tracking-tight text-zinc-900">My listings</h1>
+          <p className="mt-1 text-sm text-zinc-500">Everything you've listed, active or sold.</p>
+        </div>
+        <Link to="/listings/new" className="btn-primary flex !w-auto items-center gap-1.5 px-4 py-2.5">
+          <PlusIcon className="h-4 w-4" /> New listing
         </Link>
       </div>
 
       {error && <p className="field-error">{error}</p>}
 
       {listings?.length === 0 && (
-        <div className="rounded-xl border border-dashed border-stone-300 bg-white py-16 text-center">
-          <p className="text-sm text-stone-500">You haven't listed anything yet.</p>
-          <Link to="/listings/new" className="btn-link mt-3">
+        <div className="flex flex-col items-center rounded-2xl border border-dashed border-zinc-200 bg-white py-20 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 text-zinc-400">
+            <ArchiveBoxIcon className="h-6 w-6" />
+          </div>
+          <p className="mt-3 text-sm font-medium text-zinc-500">You haven't listed anything yet.</p>
+          <Link to="/listings/new" className="btn-link mt-3 justify-center">
             Create your first listing
           </Link>
         </div>

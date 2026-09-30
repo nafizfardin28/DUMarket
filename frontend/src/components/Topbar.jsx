@@ -3,6 +3,7 @@ import { Link, useLocation, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { imageUrl } from "../api/listings";
 import ConfirmDialog from "./ConfirmDialog";
+import { Bars3Icon, PowerIcon, UserIcon } from "./icons";
 
 const TITLES = [
   { test: (p) => p === "/listings", title: "Browse listings" },
@@ -40,30 +41,30 @@ export default function Topbar({ onOpenMobileMenu }) {
   }
 
   return (
-    <header className="flex items-center justify-between gap-3 border-b border-stone-200 bg-white px-4 py-3 sm:px-6 lg:px-8">
+    <header className="flex items-center justify-between gap-3 border-b border-zinc-100 bg-white px-4 py-3 sm:px-6 lg:px-8">
       <div className="flex items-center gap-3">
         <button
           onClick={onOpenMobileMenu}
           aria-label="Open menu"
-          className="rounded-md p-2 text-stone-600 hover:bg-stone-100 lg:hidden"
+          className="rounded-md p-2 text-zinc-500 hover:bg-zinc-100 lg:hidden"
         >
-          ☰
+          <Bars3Icon className="h-5 w-5" />
         </button>
-        <h1 className="truncate text-base font-bold text-stone-900 sm:text-lg">{pageTitle(location.pathname)}</h1>
+        <h1 className="truncate text-base font-bold text-zinc-900 sm:text-lg">{pageTitle(location.pathname)}</h1>
       </div>
 
       {user ? (
         <div className="relative" ref={menuRef}>
           <button
             onClick={() => setMenuOpen((o) => !o)}
-            className="flex items-center gap-2 rounded-full p-1 hover:bg-stone-100"
+            className="flex items-center gap-2 rounded-full p-1 hover:bg-zinc-100"
             aria-label="Account menu"
           >
-            <div className="h-8 w-8 overflow-hidden rounded-full bg-stone-200">
+            <div className="h-8 w-8 overflow-hidden rounded-full bg-zinc-200">
               {user.avatar ? (
                 <img src={imageUrl(user.avatar)} alt="" className="h-full w-full object-cover" />
               ) : (
-                <div className="flex h-full w-full items-center justify-center text-xs font-bold text-stone-500">
+                <div className="flex h-full w-full items-center justify-center text-xs font-bold text-zinc-500">
                   {user.full_name?.[0]?.toUpperCase()}
                 </div>
               )}
@@ -71,16 +72,17 @@ export default function Topbar({ onOpenMobileMenu }) {
           </button>
 
           {menuOpen && (
-            <div className="absolute right-0 z-30 mt-2 w-48 overflow-hidden rounded-xl border border-stone-200 bg-white py-1 shadow-lg">
-              <div className="border-b border-stone-100 px-3 py-2">
-                <p className="truncate text-sm font-semibold text-stone-900">{user.full_name}</p>
-                <p className="truncate text-xs text-stone-500">{user.email}</p>
+            <div className="absolute right-0 z-30 mt-2 w-52 overflow-hidden rounded-2xl border border-zinc-100 bg-white py-1.5 shadow-popover">
+              <div className="border-b border-zinc-100 px-3.5 pb-2.5">
+                <p className="truncate text-sm font-semibold text-zinc-900">{user.full_name}</p>
+                <p className="truncate text-xs text-zinc-400">{user.email}</p>
               </div>
               <Link
                 to="/profile"
                 onClick={() => setMenuOpen(false)}
-                className="block px-3 py-2 text-sm font-medium text-stone-700 hover:bg-stone-50"
+                className="mt-1 flex items-center gap-2 px-3.5 py-2 text-sm font-medium text-zinc-600 hover:bg-zinc-50"
               >
+                <UserIcon className="h-4 w-4 text-zinc-400" />
                 Profile
               </Link>
               <button
@@ -88,8 +90,9 @@ export default function Topbar({ onOpenMobileMenu }) {
                   setMenuOpen(false);
                   setConfirmingLogout(true);
                 }}
-                className="block w-full px-3 py-2 text-left text-sm font-medium text-red-600 hover:bg-red-50"
+                className="flex w-full items-center gap-2 px-3.5 py-2 text-left text-sm font-medium text-rose-600 hover:bg-rose-50"
               >
+                <PowerIcon className="h-4 w-4" />
                 Log out
               </button>
             </div>
@@ -97,7 +100,7 @@ export default function Topbar({ onOpenMobileMenu }) {
         </div>
       ) : (
         <div className="flex items-center gap-2">
-          <Link to="/login" className="text-sm font-semibold text-stone-600 hover:text-stone-900">
+          <Link to="/login" className="text-sm font-semibold text-zinc-500 hover:text-zinc-900">
             Log in
           </Link>
           <Link to="/signup" className="btn-primary !w-auto px-3 py-1.5 text-sm">

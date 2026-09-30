@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthCard from "../components/AuthCard";
 import OtpInput from "../components/OtpInput";
+import { CheckCircleIcon, EnvelopeIcon, EyeIcon, EyeSlashIcon, LockClosedIcon } from "../components/icons";
 import { useAuth } from "../context/AuthContext";
 import useAutoDismiss from "../hooks/useAutoDismiss";
 import useOtpCountdown from "../hooks/useOtpCountdown";
@@ -43,15 +44,18 @@ function RequestCodeStep({ email, setEmail, onSent }) {
           <label className="field-label" htmlFor="email">
             DU student email
           </label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="your.name@du.ac.bd"
-            className="field-input"
-          />
+          <div className="relative">
+            <EnvelopeIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="email"
+              type="email"
+              required
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="your.name@du.ac.bd"
+              className="field-input pl-11"
+            />
+          </div>
           {error && <p className="field-error">{error}</p>}
         </div>
 
@@ -60,9 +64,9 @@ function RequestCodeStep({ email, setEmail, onSent }) {
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-stone-500">
+      <p className="mt-6 text-center text-sm text-zinc-500">
         Remembered it?{" "}
-        <Link to="/login" className="font-semibold text-brand-600 hover:text-brand-700 hover:underline">
+        <Link to="/login" className="font-semibold text-brand-700 hover:text-brand-800">
           Back to login
         </Link>
       </p>
@@ -76,6 +80,8 @@ function ResetPasswordStep({ email, initialExpiresAt }) {
   const [otp, setOtp] = useState("");
   const [password, setPassword] = useState("");
   const [password2, setPassword2] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
   const [errors, setErrors] = useState({});
   const [done, setDone] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -137,10 +143,10 @@ function ResetPasswordStep({ email, initialExpiresAt }) {
     return (
       <AuthCard title="Password reset">
         <div className="flex flex-col items-center gap-3 py-4 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-3xl text-emerald-600">
-            ✓
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+            <CheckCircleIcon className="h-8 w-8" />
           </div>
-          <p className="text-sm text-stone-600">Your password has been changed. You can log in now.</p>
+          <p className="text-sm text-zinc-600">Your password has been changed. You can log in now.</p>
           <button onClick={() => navigate("/login")} className="btn-primary mt-2 !w-auto px-6">
             Go to login
           </button>
@@ -154,12 +160,12 @@ function ResetPasswordStep({ email, initialExpiresAt }) {
       <form onSubmit={handleSubmit} noValidate className="space-y-4">
         <div>
           <OtpInput value={otp} onChange={setOtp} />
-          <p className="mt-3 text-center text-xs font-medium text-stone-500">
+          <p className="mt-3 text-center text-xs font-medium text-zinc-500">
             {expired ? (
-              <span className="text-red-600">Code expired — request a new one.</span>
+              <span className="text-rose-600">Code expired — request a new one.</span>
             ) : (
               <>
-                Code expires in <span className="tabular-nums text-stone-700">{formatCountdown(secondsLeft)}</span>
+                Code expires in <span className="tabular-nums text-zinc-700">{formatCountdown(secondsLeft)}</span>
               </>
             )}
           </p>
@@ -170,14 +176,25 @@ function ResetPasswordStep({ email, initialExpiresAt }) {
           <label className="field-label" htmlFor="password">
             New password
           </label>
-          <input
-            id="password"
-            type="password"
-            required
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="field-input"
-          />
+          <div className="relative">
+            <LockClosedIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              required
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              className="field-input pl-11 pr-11"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((s) => !s)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+            >
+              {showPassword ? <EyeSlashIcon className="h-[18px] w-[18px]" /> : <EyeIcon className="h-[18px] w-[18px]" />}
+            </button>
+          </div>
           {errors.password && <p className="field-error">{errors.password[0]}</p>}
         </div>
 
@@ -185,14 +202,25 @@ function ResetPasswordStep({ email, initialExpiresAt }) {
           <label className="field-label" htmlFor="password2">
             Confirm new password
           </label>
-          <input
-            id="password2"
-            type="password"
-            required
-            value={password2}
-            onChange={(e) => setPassword2(e.target.value)}
-            className="field-input"
-          />
+          <div className="relative">
+            <LockClosedIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="password2"
+              type={showPassword2 ? "text" : "password"}
+              required
+              value={password2}
+              onChange={(e) => setPassword2(e.target.value)}
+              className="field-input pl-11 pr-11"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword2((s) => !s)}
+              aria-label={showPassword2 ? "Hide password" : "Show password"}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+            >
+              {showPassword2 ? <EyeSlashIcon className="h-[18px] w-[18px]" /> : <EyeIcon className="h-[18px] w-[18px]" />}
+            </button>
+          </div>
           {errors.password2 && <p className="field-error">{errors.password2[0]}</p>}
         </div>
 
@@ -202,10 +230,11 @@ function ResetPasswordStep({ email, initialExpiresAt }) {
           {submitting ? "Resetting…" : "Reset password"}
         </button>
 
-        <p className="text-center text-sm text-stone-500">
+        <p className="text-center text-sm text-zinc-500">
           Didn't get a code?{" "}
           <button type="button" className="btn-link" onClick={handleResend} disabled={resending}>
-            {resending ? "Resending…" : resentJustNow ? "Sent again ✔" : "Resend code"}
+            {resending ? "Resending…" : resentJustNow ? "Sent again" : "Resend code"}
+            {resentJustNow && <CheckCircleIcon className="h-3.5 w-3.5" />}
           </button>
         </p>
       </form>

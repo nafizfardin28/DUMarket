@@ -51,8 +51,9 @@ export default function OtpInput({ length = OTP_LENGTH, value, onChange, disable
           onChange={(e) => updateDigit(index, e.target.value)}
           onKeyDown={(e) => handleKeyDown(index, e)}
           autoFocus={autoFocus && index === 0}
-          className="h-12 w-11 rounded-lg border border-stone-300 text-center text-xl font-semibold
-            text-stone-900 focus:border-brand-500 focus:outline-none focus:ring-1 focus:ring-brand-500 disabled:opacity-50"
+          className="h-12 w-11 rounded-xl border border-zinc-200 bg-white text-center text-xl font-semibold
+            text-zinc-900 shadow-sm transition-shadow focus:border-brand-500 focus:outline-none
+            focus:ring-4 focus:ring-brand-500/10 disabled:opacity-50"
         />
       ))}
     </div>

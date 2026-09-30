@@ -4,6 +4,20 @@ import ListingCard from "../components/ListingCard";
 import { getListings } from "../api/listings";
 import { CATEGORIES } from "../constants/categories";
 import { HALLS } from "../constants/halls";
+import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, ShoppingBagIcon } from "../components/icons";
+
+function CardSkeleton() {
+  return (
+    <div className="overflow-hidden rounded-2xl border border-zinc-200/70 bg-white">
+      <div className="aspect-square w-full animate-pulse bg-zinc-100" />
+      <div className="space-y-2 p-3.5">
+        <div className="h-3.5 w-3/4 animate-pulse rounded bg-zinc-100" />
+        <div className="h-4 w-1/3 animate-pulse rounded bg-zinc-100" />
+        <div className="h-3 w-1/2 animate-pulse rounded bg-zinc-100" />
+      </div>
+    </div>
+  );
+}
 
 export default function BrowseListingsPage() {
   const [searchInput, setSearchInput] = useState("");
@@ -53,9 +67,23 @@ export default function BrowseListingsPage() {
 
   return (
     <AppLayout>
-      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
-        <h1 className="text-xl font-bold text-stone-900">Browse listings</h1>
-        <div className="flex flex-wrap gap-2">
+      <div className="mb-6">
+        <h1 className="text-2xl font-bold tracking-tight text-zinc-900">Browse</h1>
+        <p className="mt-1 text-sm text-zinc-500">Find whatever your hallmates are selling right now.</p>
+      </div>
+
+      <div className="mb-6 flex flex-col gap-3 sm:flex-row">
+        <div className="relative flex-1">
+          <MagnifyingGlassIcon className="pointer-events-none absolute left-3.5 top-1/2 h-4 w-4 -translate-y-1/2 text-zinc-400" />
+          <input
+            type="search"
+            value={searchInput}
+            onChange={(e) => setSearchInput(e.target.value)}
+            placeholder="Search listings…"
+            className="field-input pl-10"
+          />
+        </div>
+        <div className="flex gap-2">
           <select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
@@ -79,23 +107,22 @@ export default function BrowseListingsPage() {
         </div>
       </div>
 
-      <div className="relative mb-6">
-        <span className="pointer-events-none absolute left-3 top-1/2 -translate-y-1/2 text-stone-400">🔍</span>
-        <input
-          type="search"
-          value={searchInput}
-          onChange={(e) => setSearchInput(e.target.value)}
-          placeholder="Search listings by title or description…"
-          className="field-input pl-9"
-        />
-      </div>
-
-      {loading && <p className="text-sm text-stone-500">Loading…</p>}
       {error && <p className="field-error">{error}</p>}
 
+      {loading && (
+        <div className="grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-4">
+          {Array.from({ length: 8 }, (_, i) => (
+            <CardSkeleton key={i} />
+          ))}
+        </div>
+      )}
+
       {!loading && !error && data?.results.length === 0 && (
-        <div className="rounded-xl border border-dashed border-stone-300 bg-white py-16 text-center">
-          <p className="text-sm text-stone-500">
+        <div className="flex flex-col items-center rounded-2xl border border-dashed border-zinc-200 bg-white py-20 text-center">
+          <div className="flex h-12 w-12 items-center justify-center rounded-full bg-zinc-100 text-zinc-400">
+            <ShoppingBagIcon className="h-6 w-6" />
+          </div>
+          <p className="mt-3 text-sm font-medium text-zinc-500">
             {search || category || hall ? "No listings match those filters yet." : "No listings yet."}
           </p>
         </div>
@@ -110,25 +137,25 @@ export default function BrowseListingsPage() {
           </div>
 
           {data.totalPages > 1 && (
-            <div className="mt-6 flex items-center justify-center gap-3">
+            <div className="mt-8 flex items-center justify-center gap-3">
               <button
                 onClick={() => setPage((p) => Math.max(1, p - 1))}
                 disabled={page <= 1}
-                className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm font-semibold text-stone-600
-                  hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex items-center gap-1 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-sm font-semibold text-zinc-600
+                  transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                ← Previous
+                <ChevronLeftIcon className="h-4 w-4" /> Previous
               </button>
-              <span className="text-sm text-stone-500">
+              <span className="text-sm font-medium text-zinc-500">
                 Page {data.page} of {data.totalPages}
               </span>
               <button
                 onClick={() => setPage((p) => Math.min(data.totalPages, p + 1))}
                 disabled={page >= data.totalPages}
-                className="rounded-lg border border-stone-300 px-3 py-1.5 text-sm font-semibold text-stone-600
-                  hover:bg-stone-100 disabled:cursor-not-allowed disabled:opacity-40"
+                className="flex items-center gap-1 rounded-xl border border-zinc-200 bg-white px-3 py-1.5 text-sm font-semibold text-zinc-600
+                  transition-colors hover:bg-zinc-50 disabled:cursor-not-allowed disabled:opacity-40"
               >
-                Next →
+                Next <ChevronRightIcon className="h-4 w-4" />
               </button>
             </div>
           )}

@@ -11,7 +11,7 @@ function formatDate(iso) {
   );
 }
 
-export default function SellerRatings({ sellerId }) {
+export default function SellerRatings({ sellerId, embedded = false }) {
   const { user } = useAuth();
   const [data, setData] = useState(null);
   const [myRating, setMyRating] = useState(null);
@@ -86,23 +86,25 @@ export default function SellerRatings({ sellerId }) {
   if (!data) return null;
 
   return (
-    <div className="mt-6 rounded-xl border border-stone-200 bg-white p-4">
+    <div className={embedded ? "" : "mt-6 rounded-2xl border border-zinc-200/70 bg-white p-4"}>
       <div className="flex items-center justify-between">
-        <p className="text-xs font-semibold uppercase tracking-wide text-stone-400">Seller ratings</p>
+        <p className="text-xs font-semibold uppercase tracking-wide text-zinc-400">
+          {embedded ? "Ratings & reviews" : "Seller ratings"}
+        </p>
         {data.count > 0 && (
           <div className="flex items-center gap-1.5 text-sm">
             <StarDisplay value={data.average} />
-            <span className="font-semibold text-stone-700">{data.average.toFixed(1)}</span>
-            <span className="text-stone-400">({data.count})</span>
+            <span className="font-semibold text-zinc-700">{data.average.toFixed(1)}</span>
+            <span className="text-zinc-400">({data.count})</span>
           </div>
         )}
       </div>
 
-      {data.count === 0 && <p className="mt-2 text-sm text-stone-500">No ratings yet.</p>}
+      {data.count === 0 && <p className="mt-2 text-sm text-zinc-500">No ratings yet.</p>}
 
       {canRate && (
-        <form onSubmit={handleSubmit} className="mt-3 space-y-2 rounded-lg bg-stone-50 p-3">
-          <p className="text-xs font-semibold text-stone-500">
+        <form onSubmit={handleSubmit} className="mt-3 space-y-2 rounded-xl bg-zinc-50 p-3">
+          <p className="text-xs font-semibold text-zinc-500">
             {myRating ? "Update your rating" : "Rate this seller"}
           </p>
           <StarPicker value={stars} onChange={setStars} />
@@ -123,7 +125,7 @@ export default function SellerRatings({ sellerId }) {
                 type="button"
                 onClick={handleRemove}
                 disabled={submitting}
-                className="rounded-lg px-3 py-1.5 text-sm font-semibold text-red-600 hover:bg-red-50"
+                className="rounded-lg px-3 py-1.5 text-sm font-semibold text-rose-600 hover:bg-rose-50"
               >
                 Remove
               </button>
@@ -135,22 +137,22 @@ export default function SellerRatings({ sellerId }) {
       {data.results.length > 0 && (
         <ul className="mt-4 space-y-3">
           {data.results.map((r) => (
-            <li key={r.id} className="border-t border-stone-100 pt-3 first:border-0 first:pt-0">
+            <li key={r.id} className="border-t border-zinc-100 pt-3 first:border-0 first:pt-0">
               <div className="flex items-center gap-2">
-                <div className="h-6 w-6 overflow-hidden rounded-full bg-stone-200">
+                <div className="h-6 w-6 overflow-hidden rounded-full bg-zinc-200">
                   {r.buyer?.avatar ? (
                     <img src={imageUrl(r.buyer.avatar)} alt="" className="h-full w-full object-cover" />
                   ) : (
-                    <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-stone-500">
+                    <div className="flex h-full w-full items-center justify-center text-[10px] font-bold text-zinc-500">
                       {r.buyer?.full_name?.[0]?.toUpperCase()}
                     </div>
                   )}
                 </div>
-                <span className="text-sm font-semibold text-stone-900">{r.buyer?.full_name}</span>
-                <StarDisplay value={r.stars} size="text-xs" />
-                <span className="ml-auto text-xs text-stone-400">{formatDate(r.created_at)}</span>
+                <span className="text-sm font-semibold text-zinc-900">{r.buyer?.full_name}</span>
+                <StarDisplay value={r.stars} size="h-3 w-3" />
+                <span className="ml-auto text-xs text-zinc-400">{formatDate(r.created_at)}</span>
               </div>
-              {r.comment && <p className="mt-1 pl-8 text-sm text-stone-600">{r.comment}</p>}
+              {r.comment && <p className="mt-1 pl-8 text-sm text-zinc-600">{r.comment}</p>}
             </li>
           ))}
         </ul>

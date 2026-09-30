@@ -2,6 +2,20 @@ import { useEffect, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import AuthCard from "../components/AuthCard";
 import OtpInput from "../components/OtpInput";
+import {
+  CheckCircleIcon,
+  EnvelopeIcon,
+  EyeIcon,
+  EyeSlashIcon,
+  ChevronDownIcon,
+  HashtagIcon,
+  LockClosedIcon,
+  MapPinIcon,
+  PhoneIcon,
+  ShoppingBagIcon,
+  TagIcon,
+  UserIcon,
+} from "../components/icons";
 import { useAuth } from "../context/AuthContext";
 import useAutoDismiss from "../hooks/useAutoDismiss";
 import useOtpCountdown from "../hooks/useOtpCountdown";
@@ -146,42 +160,48 @@ function OtpVerifyStep({ email, initialExpiresAt }) {
     return (
       <AuthCard title="Email verified">
         <div className="flex flex-col items-center gap-3 py-4 text-center">
-          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-emerald-100 text-3xl text-emerald-600">
-            ✓
+          <div className="flex h-14 w-14 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+            <CheckCircleIcon className="h-8 w-8" />
           </div>
-          <p className="text-sm text-stone-600">
-            Your DU student account is confirmed. Taking you to login…
-          </p>
+          <p className="text-sm text-zinc-600">Your DU student account is confirmed. Taking you to login…</p>
         </div>
       </AuthCard>
     );
   }
 
   return (
-    <AuthCard title="Check your email 📬" subtitle={`We sent a 6-digit code to ${email}.`}>
+    <AuthCard title="Check your email" subtitle={`We sent a 6-digit code to ${email}.`}>
+      <div className="mb-5 flex justify-center">
+        <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-50 text-brand-600">
+          <EnvelopeIcon className="h-6 w-6" />
+        </div>
+      </div>
       <form onSubmit={handleSubmit} noValidate className="space-y-5">
         <div>
           <OtpInput value={otp} onChange={setOtp} />
 
-          <p className="mt-3 text-center text-xs font-medium text-stone-500">
+          <p className="mt-3 text-center text-xs font-medium text-zinc-500">
             {expired ? (
-              <span className="text-red-600">Code expired — request a new one.</span>
+              <span className="text-rose-600">Code expired — request a new one.</span>
             ) : (
-              <>Code expires in <span className="tabular-nums text-stone-700">{formatCountdown(secondsLeft)}</span></>
+              <>
+                Code expires in <span className="tabular-nums text-zinc-700">{formatCountdown(secondsLeft)}</span>
+              </>
             )}
           </p>
 
-          {error && <p className="field-error text-center">{error}</p>}
+          {error && <p className="field-error justify-center">{error}</p>}
         </div>
 
         <button type="submit" disabled={submitting || expired} className="btn-primary">
           {submitting ? "Verifying…" : "Verify email"}
         </button>
 
-        <p className="text-center text-sm text-stone-500">
+        <p className="text-center text-sm text-zinc-500">
           Didn't get a code?{" "}
           <button type="button" className="btn-link" onClick={handleResend} disabled={resending}>
-            {resending ? "Resending…" : resentJustNow ? "Sent again ✔" : "Resend code"}
+            {resending ? "Resending…" : resentJustNow ? "Sent again" : "Resend code"}
+            {resentJustNow && <CheckCircleIcon className="h-3.5 w-3.5" />}
           </button>
         </p>
       </form>
@@ -198,6 +218,8 @@ export default function SignupPage() {
   const [submitting, setSubmitting] = useState(false);
   const [done, setDone] = useState(false);
   const [otpExpiresAt, setOtpExpiresAt] = useState(null);
+  const [showPassword, setShowPassword] = useState(false);
+  const [showPassword2, setShowPassword2] = useState(false);
 
   function update(field, value) {
     setForm((f) => ({ ...f, [field]: value }));
@@ -236,7 +258,7 @@ export default function SignupPage() {
 
   return (
     <AuthCard
-      title="Create your DUMarket account"
+      title="Create your account"
       subtitle={`Only @${DU_EMAIL_DOMAIN} emails can sign up.`}
       maxWidthClass="max-w-2xl"
     >
@@ -245,15 +267,18 @@ export default function SignupPage() {
           <label className="field-label" htmlFor="full_name">
             Full Name
           </label>
-          <input
-            id="full_name"
-            type="text"
-            required
-            value={form.full_name}
-            onChange={(e) => update("full_name", e.target.value)}
-            placeholder="Rafi Islam"
-            className="field-input"
-          />
+          <div className="relative">
+            <UserIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="full_name"
+              type="text"
+              required
+              value={form.full_name}
+              onChange={(e) => update("full_name", e.target.value)}
+              placeholder="Rafi Islam"
+              className="field-input pl-11"
+            />
+          </div>
           {errors.full_name && (
             <p className="field-error">{errors.full_name[0]}</p>
           )}
@@ -263,16 +288,19 @@ export default function SignupPage() {
           <label className="field-label" htmlFor="regNo">
             Registration Number
           </label>
-          <input
-            id="regNo"
-            required
-            inputMode="numeric"
-            maxLength={10}
-            value={form.regNo}
-            onChange={(e) => update("regNo", e.target.value)}
-            placeholder="202*******"
-            className="field-input"
-          />
+          <div className="relative">
+            <HashtagIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="regNo"
+              required
+              inputMode="numeric"
+              maxLength={10}
+              value={form.regNo}
+              onChange={(e) => update("regNo", e.target.value)}
+              placeholder="202*******"
+              className="field-input pl-11"
+            />
+          </div>
           {errors.regNo && <p className="field-error">{errors.regNo[0]}</p>}
         </div>
 
@@ -280,15 +308,18 @@ export default function SignupPage() {
           <label className="field-label" htmlFor="email">
             DU Institutional Mail
           </label>
-          <input
-            id="email"
-            type="email"
-            required
-            value={form.email}
-            onChange={(e) => update("email", e.target.value)}
-            placeholder={`your.name@${DU_EMAIL_DOMAIN}`}
-            className="field-input"
-          />
+          <div className="relative">
+            <EnvelopeIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="email"
+              type="email"
+              required
+              value={form.email}
+              onChange={(e) => update("email", e.target.value)}
+              placeholder={`your.name@${DU_EMAIL_DOMAIN}`}
+              className="field-input pl-11"
+            />
+          </div>
           {errors.email && <p className="field-error">{errors.email[0]}</p>}
         </div>
 
@@ -296,17 +327,20 @@ export default function SignupPage() {
           <label className="field-label" htmlFor="phone">
             Phone Number
           </label>
-          <input
-            id="phone"
-            type="tel"
-            required
-            inputMode="numeric"
-            maxLength={11}
-            value={form.phone}
-            onChange={(e) => update("phone", e.target.value)}
-            placeholder="01XXXXXXXXX"
-            className="field-input"
-          />
+          <div className="relative">
+            <PhoneIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="phone"
+              type="tel"
+              required
+              inputMode="numeric"
+              maxLength={11}
+              value={form.phone}
+              onChange={(e) => update("phone", e.target.value)}
+              placeholder="01XXXXXXXXX"
+              className="field-input pl-11"
+            />
+          </div>
           {errors.phone && <p className="field-error">{errors.phone[0]}</p>}
         </div>
 
@@ -314,31 +348,35 @@ export default function SignupPage() {
           <label className="field-label" htmlFor="hall">
             Hall
           </label>
-          <select
-            id="hall"
-            name="hall"
-            required
-            value={form.hall}
-            onChange={(e) => update("hall", e.target.value)}
-            className="field-input"
-          >
-            <option value="">Select your hall…</option>
-            {HALLS.map((hall) => (
-              <option key={hall} value={hall}>
-                {hall}
-              </option>
-            ))}
-          </select>
+          <div className="relative">
+            <MapPinIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <select
+              id="hall"
+              name="hall"
+              required
+              value={form.hall}
+              onChange={(e) => update("hall", e.target.value)}
+              className="field-input appearance-none pl-11"
+            >
+              <option value="">Select your hall…</option>
+              {HALLS.map((hall) => (
+                <option key={hall} value={hall}>
+                  {hall}
+                </option>
+              ))}
+            </select>
+            <ChevronDownIcon className="pointer-events-none absolute right-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+          </div>
         </div>
 
         <fieldset>
           <legend className="field-label">Role</legend>
-          <div className="grid grid-cols-2 gap-1 rounded-lg border border-stone-300 bg-stone-100 p-1">
+          <div className="grid grid-cols-2 gap-2">
             <label
-              className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-md py-2 text-sm font-semibold transition-colors ${
+              className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border px-3.5 py-2.5 text-[15px] font-semibold transition-all ${
                 form.role === "buyer"
-                  ? "bg-white text-brand-600 shadow-sm"
-                  : "text-stone-500 hover:text-stone-700"
+                  ? "border-brand-500 bg-brand-50 text-brand-700 ring-1 ring-brand-500"
+                  : "border-zinc-200 text-zinc-500 hover:border-zinc-300 hover:bg-zinc-50"
               }`}
             >
               <input
@@ -349,13 +387,14 @@ export default function SignupPage() {
                 onChange={() => update("role", "buyer")}
                 className="sr-only"
               />
+              <ShoppingBagIcon className="h-[18px] w-[18px]" />
               Buyer
             </label>
             <label
-              className={`flex cursor-pointer items-center justify-center gap-1.5 rounded-md py-2 text-sm font-semibold transition-colors ${
+              className={`flex cursor-pointer items-center justify-center gap-2 rounded-xl border px-3.5 py-2.5 text-[15px] font-semibold transition-all ${
                 form.role === "seller"
-                  ? "bg-white text-brand-600 shadow-sm"
-                  : "text-stone-500 hover:text-stone-700"
+                  ? "border-brand-500 bg-brand-50 text-brand-700 ring-1 ring-brand-500"
+                  : "border-zinc-200 text-zinc-500 hover:border-zinc-300 hover:bg-zinc-50"
               }`}
             >
               <input
@@ -366,6 +405,7 @@ export default function SignupPage() {
                 onChange={() => update("role", "seller")}
                 className="sr-only"
               />
+              <TagIcon className="h-[18px] w-[18px]" />
               Seller
             </label>
           </div>
@@ -376,15 +416,26 @@ export default function SignupPage() {
           <label className="field-label" htmlFor="password">
             Password
           </label>
-          <input
-            id="password"
-            type="password"
-            required
-            maxLength={8}
-            value={form.password}
-            onChange={(e) => update("password", e.target.value)}
-            className="field-input"
-          />
+          <div className="relative">
+            <LockClosedIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="password"
+              type={showPassword ? "text" : "password"}
+              required
+              maxLength={8}
+              value={form.password}
+              onChange={(e) => update("password", e.target.value)}
+              className="field-input pl-11 pr-11"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((s) => !s)}
+              aria-label={showPassword ? "Hide password" : "Show password"}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+            >
+              {showPassword ? <EyeSlashIcon className="h-[18px] w-[18px]" /> : <EyeIcon className="h-[18px] w-[18px]" />}
+            </button>
+          </div>
           {errors.password && (
             <p className="field-error">{errors.password[0]}</p>
           )}
@@ -394,15 +445,26 @@ export default function SignupPage() {
           <label className="field-label" htmlFor="password2">
             Confirm password
           </label>
-          <input
-            id="password2"
-            type="password"
-            required
-            maxLength={8}
-            value={form.password2}
-            onChange={(e) => update("password2", e.target.value)}
-            className="field-input"
-          />
+          <div className="relative">
+            <LockClosedIcon className="pointer-events-none absolute left-3.5 top-1/2 h-[18px] w-[18px] -translate-y-1/2 text-zinc-400" />
+            <input
+              id="password2"
+              type={showPassword2 ? "text" : "password"}
+              required
+              maxLength={8}
+              value={form.password2}
+              onChange={(e) => update("password2", e.target.value)}
+              className="field-input pl-11 pr-11"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword2((s) => !s)}
+              aria-label={showPassword2 ? "Hide password" : "Show password"}
+              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-zinc-400 hover:text-zinc-600"
+            >
+              {showPassword2 ? <EyeSlashIcon className="h-[18px] w-[18px]" /> : <EyeIcon className="h-[18px] w-[18px]" />}
+            </button>
+          </div>
           {errors.password2 && (
             <p className="field-error">{errors.password2[0]}</p>
           )}
@@ -417,12 +479,9 @@ export default function SignupPage() {
         </button>
       </form>
 
-      <p className="mt-6 text-center text-sm text-stone-500">
+      <p className="mt-6 text-center text-sm text-zinc-500">
         Already have an account?{" "}
-        <Link
-          to="/login"
-          className="font-semibold text-brand-600 hover:text-brand-700 hover:underline"
-        >
+        <Link to="/login" className="font-semibold text-brand-700 hover:text-brand-800">
           Log in
         </Link>
       </p>
